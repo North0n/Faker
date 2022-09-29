@@ -5,10 +5,13 @@ namespace Faker.Generators;
 
 public class UIntegerGenerator : IValueGenerator
 {
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
         return (uint)context.Random.Next();
     }
 
-    public Type GeneratedType => typeof(uint);
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(uint);   
+    }
 }

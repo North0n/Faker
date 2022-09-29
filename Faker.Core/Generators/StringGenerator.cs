@@ -6,19 +6,24 @@ namespace Faker.Generators;
 
 public class StringGenerator : IValueGenerator
 {
-    private const string Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public string Characters { get; set; } = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public int MinLength { get; set; } = 1;
+    public int MaxLength { get; set; } = 50;
 
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
-        var length = context.Random.Next(0, 255);
+        var length = context.Random.Next(MinLength, MaxLength + 1);
         var str = new StringBuilder(length);
         for (var i = 0; i < length; i++)
         {
-            str.Append(Chars[context.Random.Next(Chars.Length)]);
+            str.Append(Characters[context.Random.Next(Characters.Length)]);
         }
 
         return str.ToString();
     }
-
-    public Type GeneratedType => typeof(string);
+    
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(string);
+    }
 }

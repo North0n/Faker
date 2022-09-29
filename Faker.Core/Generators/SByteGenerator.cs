@@ -5,10 +5,13 @@ namespace Faker.Generators;
 
 public class SByteGenerator : IValueGenerator
 {
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
         return (sbyte)context.Random.Next(sbyte.MinValue, sbyte.MaxValue + 1);
     }
 
-    public Type GeneratedType => typeof(sbyte);
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(sbyte);   
+    }
 }

@@ -5,10 +5,13 @@ namespace Faker.Generators;
 
 public class BoolGenerator : IValueGenerator
 {
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
         return context.Random.Next(0, 2) == 0;
     }
 
-    public Type GeneratedType => typeof(bool);
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(bool);
+    }
 }

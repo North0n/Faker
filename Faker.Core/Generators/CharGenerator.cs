@@ -5,10 +5,13 @@ namespace Faker.Generators;
 
 public class CharGenerator : IValueGenerator
 {
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
         return (char)context.Random.Next(char.MinValue, char.MaxValue + 1);
     }
 
-    public Type GeneratedType => typeof(char);
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(char);
+    }
 }

@@ -5,15 +5,16 @@ namespace Faker.Generators;
 
 public class DateTimeGenerator : IValueGenerator
 {
-    public static readonly DateTime MinValue = new DateTime(1900, 1, 1, 0, 0, 0, 0);
-    public static readonly DateTime MaxValue = new DateTime(2100, 1, 1, 0, 0, 0, 0);
-    
-    private static readonly double Range = (MaxValue - MinValue).TotalSeconds; 
+    public DateTime MinValue { get; set; } = new DateTime(1900, 1, 1, 0, 0, 0, 0);
+    public DateTime MaxValue { get; set; } = new DateTime(2100, 1, 1, 0, 0, 0, 0);
 
-    public object Generate(GeneratorContext context)
+    public object Generate(Type type, GeneratorContext context)
     {
-        return MinValue.AddSeconds(context.Random.NextDouble() * Range);
+        return MinValue.AddSeconds(context.Random.NextDouble() * (MaxValue - MinValue).TotalSeconds);
     }
 
-    public Type GeneratedType => typeof(DateTime);
+    public bool CanGenerate(Type type)
+    {
+        return type == typeof(DateTime);
+    }
 }
