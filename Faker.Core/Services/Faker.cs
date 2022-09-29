@@ -6,7 +6,7 @@ namespace Faker.Services;
 
 public class Faker : IFaker
 {
-    private readonly Dictionary<Type, IValueGenerator> _generators;
+    private readonly List<IValueGenerator> _generators;
     private readonly GeneratorContext _context;
     private readonly HashSet<Type> _typesBeingCreated = new();
 
@@ -20,13 +20,11 @@ public class Faker : IFaker
     {
     }
 
-    private static Dictionary<Type, IValueGenerator> GetGenerators()
+    private static List<IValueGenerator> GetGenerators()
     {
-        var generators = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+        return AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
             .Where(t => t.GetInterfaces().Contains(typeof(IValueGenerator)))
             .Select(t => (IValueGenerator)Activator.CreateInstance(t)).ToList();
-
-        return generators.ToDictionary(generator => generator.GeneratedType);
     }
 
     public T Create<T>()
@@ -36,9 +34,12 @@ public class Faker : IFaker
 
     public object Create(Type type)
     {
-        if (_generators.ContainsKey(type))
+        foreach (var generator in _generators)
         {
-            return _generators[type].Generate(_context);
+            if (generator.CanGenerate(type))
+            {
+                return generator.Generate(type, _context);
+            }
         }
 
         if (_typesBeingCreated.Contains(type))
@@ -46,6 +47,10 @@ public class Faker : IFaker
 
         _typesBeingCreated.Add(type);
         var obj = CreateComplex(type);
+        if (obj == null)
+        {
+            return null;
+        }
         FillFields(obj);
         _typesBeingCreated.Remove(type);
         return obj;
