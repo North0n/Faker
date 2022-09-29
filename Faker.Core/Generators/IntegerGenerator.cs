@@ -6,19 +6,10 @@ namespace Faker.Generators;
 
 public class IntegerGenerator : IValueGenerator
 {
-    private static readonly Type[] AllowedTypes =
+    public object Generate(GeneratorContext context)
     {
-        typeof(sbyte), typeof(byte), typeof(short), typeof(ushort), typeof(int), typeof(uint),
-        typeof(long), typeof(ulong), typeof(BigInteger)
-    };
-
-    public object Generate(Type type, GeneratorContext context)
-    {
-        return context.Random.Next();
+        return context.Random.Next(int.MinValue, int.MaxValue);
     }
 
-    public bool CanGenerate(Type type)
-    {
-        return AllowedTypes.Contains(type);
-    }
-}
+    public Type GeneratedType => typeof(int);
+};

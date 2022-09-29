@@ -7,15 +7,13 @@ public class DateTimeGenerator : IValueGenerator
 {
     public static readonly DateTime MinValue = new DateTime(1900, 1, 1, 0, 0, 0, 0);
     public static readonly DateTime MaxValue = new DateTime(2100, 1, 1, 0, 0, 0, 0);
+    
+    private static readonly double Range = (MaxValue - MinValue).Seconds; 
 
-    public object Generate(Type type, GeneratorContext context)
+    public object Generate(GeneratorContext context)
     {
-        var range = (MaxValue - MinValue).TotalSeconds;
-        return MinValue.AddSeconds(context.Random.NextDouble() * range);
+        return MinValue.AddSeconds(context.Random.NextDouble() * Range);
     }
 
-    public bool CanGenerate(Type type)
-    {
-        return type == typeof(DateTime);
-    }
+    public Type GeneratedType => typeof(DateTime);
 }

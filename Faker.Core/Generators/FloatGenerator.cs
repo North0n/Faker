@@ -5,18 +5,10 @@ namespace Faker.Generators;
 
 public class FloatGenerator : IValueGenerator
 {
-    private static readonly Type[] AllowedTypes =
+    public object Generate(GeneratorContext context)
     {
-        typeof(float), typeof(double), typeof(decimal)
-    };
-    
-    public object Generate(Type type, GeneratorContext context)
-    {
-        return (context.Random.NextDouble() - 0.5) * double.MaxValue;
+        return (float)((context.Random.NextSingle() - 0.5) * float.MaxValue);
     }
 
-    public bool CanGenerate(Type type)
-    {
-        return AllowedTypes.Contains(type);
-    }
+    public Type GeneratedType => typeof(float);
 }

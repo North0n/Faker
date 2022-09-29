@@ -1,4 +1,5 @@
-﻿using Faker.Entities;
+﻿using System.Text;
+using Faker.Entities;
 using Faker.Interfaces;
 
 namespace Faker.Generators;
@@ -7,15 +8,17 @@ public class StringGenerator : IValueGenerator
 {
     private const string Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public object Generate(Type type, GeneratorContext context)
+    public object Generate(GeneratorContext context)
     {
         var length = context.Random.Next(0, 255);
-        var str = new string('\0', length);
-        return str.Select(_ => Chars[context.Random.Next(0, Chars.Length)]);
+        var str = new StringBuilder(length);
+        for (var i = 0; i < length; i++)
+        {
+            str.Append(Chars[context.Random.Next(Chars.Length)]);
+        }
+
+        return str.ToString();
     }
 
-    public bool CanGenerate(Type type)
-    {
-        return type == typeof(string);
-    }
+    public Type GeneratedType => typeof(string);
 }
