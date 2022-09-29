@@ -8,7 +8,7 @@ public class DateTimeGenerator : IValueGenerator
     public static readonly DateTime MinValue = new DateTime(1900, 1, 1, 0, 0, 0, 0);
     public static readonly DateTime MaxValue = new DateTime(2100, 1, 1, 0, 0, 0, 0);
     
-    private static readonly double Range = (MaxValue - MinValue).Seconds; 
+    private static readonly double Range = (MaxValue - MinValue).TotalSeconds; 
 
     public object Generate(GeneratorContext context)
     {
