@@ -1,4 +1,6 @@
+using System.Linq.Expressions;
 using System.Reflection;
+using Faker.Entities;
 using Faker.Interfaces;
 
 namespace Tests;
@@ -84,7 +86,7 @@ public class Tests
 
     class CycleList
     {
-        public string name { get; set; }
+        public string Name { get; set; }
         public List<CycleList> InnerList { get; set; }
     }
     
@@ -98,7 +100,7 @@ public class Tests
             Assert.That(innerList, Is.Not.EqualTo(null));
             Assert.Multiple(() =>
             {
-                Assert.That(innerList.name, Is.Not.EqualTo(default(string)));
+                Assert.That(innerList.Name, Is.Not.EqualTo(default(string)));
                 Assert.That(innerList.InnerList, Is.Not.EqualTo(default(List<CycleList>)));
             });
             foreach (var i in innerList.InnerList)
@@ -106,5 +108,34 @@ public class Tests
                 Assert.That(i, Is.EqualTo(default(CycleList)));
             }
         }
+    }
+
+    class Person
+    {
+        public string Name { get; set; }
+        public string City { get; set; }
+        private int Age {get; set; }
+        public string PrevCity;
+    }
+    
+    [Test]
+    public void ConfigTest()
+    {
+        var config = new FakerConfig();
+        config.Add<Person, string, CityGenerator>(person => person.City);
+        config.Add<Person, string, CityGenerator>(p => p.PrevCity);
+        
+        var faker = new Faker.Services.Faker(config, new Random(13));
+        var person = faker.Create<Person>();
+        Assert.Multiple(() =>
+        {
+            Assert.That(person.Name, Is.Not.EqualTo(default(string)));
+            Assert.That(person.City, Is.AnyOf(CityGenerator.Cities));
+            Assert.That(person.PrevCity, Is.AnyOf(CityGenerator.Cities));
+            Assert.That(
+                (int)person.GetType().GetProperty("Age", BindingFlags.Instance | BindingFlags.NonPublic)!
+                    .GetValue(person)!,
+                Is.Not.EqualTo(default(int)));
+        });
     }
 }
