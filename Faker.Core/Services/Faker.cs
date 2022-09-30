@@ -9,7 +9,13 @@ public class Faker : IFaker
     private readonly List<IValueGenerator> _generators;
     private readonly GeneratorContext _context;
     private readonly HashSet<Type> _typesBeingCreated = new();
+    private readonly FakerConfig _config = null;
 
+    public Faker(FakerConfig config, Random random) : this(random)
+    {
+        _config = config;
+    }
+    
     public Faker(Random random)
     {
         _generators = GetGenerators();
@@ -22,7 +28,7 @@ public class Faker : IFaker
 
     private static List<IValueGenerator> GetGenerators()
     {
-        return AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+        return Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.GetInterfaces().Contains(typeof(IValueGenerator)))
             .Select(t => (IValueGenerator)Activator.CreateInstance(t)).ToList();
     }
@@ -52,6 +58,7 @@ public class Faker : IFaker
             return null;
         }
         FillFields(obj);
+        FillProps(obj);
         _typesBeingCreated.Remove(type);
         return obj;
     }
@@ -64,7 +71,8 @@ public class Faker : IFaker
         {
             try
             {
-                return constructor.Invoke(constructor.GetParameters().Select(p => Create(p.ParameterType)).ToArray());
+                return constructor.Invoke(constructor.GetParameters()
+                    .Select(info => GenerateMemberValue(type, info.Name, info.ParameterType)).ToArray());
             }
             catch (Exception)
             {
@@ -84,11 +92,29 @@ public class Faker : IFaker
                 continue;
             }
 
-            var value = Create(field.FieldType);
-            field.SetValue(obj, value);
+            field.SetValue(obj, GenerateMemberValue(obj.GetType(), field.Name, field.FieldType));
         }
     }
-    
+
+    private void FillProps(object obj)
+    {
+        var props = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach (var prop in props)
+        {
+            if (prop.CanWrite)
+            {
+                prop.SetValue(obj, GenerateMemberValue(obj.GetType(), prop.Name, prop.PropertyType));
+            }
+        }
+    }
+
+    private object GenerateMemberValue(Type objectType, string memberName, Type memberType)
+    {
+        if (_config != null && _config.Contains(objectType, memberName))
+            return _config.GetGenerator(objectType, memberName).Generate(memberType, _context);
+        return Create(memberType);
+    }
+
     private static object GetDefaultValue(Type t)
     {
         return t.IsValueType ? Activator.CreateInstance(t) : null;
