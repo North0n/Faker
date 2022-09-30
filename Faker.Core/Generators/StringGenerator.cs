@@ -14,14 +14,11 @@ public class StringGenerator : IValueGenerator
     {
         var length = context.Random.Next(MinLength, MaxLength + 1);
         var str = new StringBuilder(length);
-        for (var i = 0; i < length; i++)
-        {
-            str.Append(Characters[context.Random.Next(Characters.Length)]);
-        }
+        for (var i = 0; i < length; i++) str.Append(Characters[context.Random.Next(Characters.Length)]);
 
         return str.ToString();
     }
-    
+
     public bool CanGenerate(Type type)
     {
         return type == typeof(string);

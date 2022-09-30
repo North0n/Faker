@@ -5,8 +5,8 @@ namespace Faker.Generators;
 
 public class DateTimeGenerator : IValueGenerator
 {
-    public DateTime MinValue { get; set; } = new DateTime(1900, 1, 1, 0, 0, 0, 0);
-    public DateTime MaxValue { get; set; } = new DateTime(2100, 1, 1, 0, 0, 0, 0);
+    public DateTime MinValue { get; set; } = new(1900, 1, 1, 0, 0, 0, 0);
+    public DateTime MaxValue { get; set; } = new(2100, 1, 1, 0, 0, 0, 0);
 
     public object Generate(Type type, GeneratorContext context)
     {

@@ -12,6 +12,6 @@ public class ULongGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(ulong);   
+        return type == typeof(ulong);
     }
 }

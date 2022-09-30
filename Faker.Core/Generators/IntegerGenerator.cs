@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Faker.Entities;
+﻿using Faker.Entities;
 using Faker.Interfaces;
 
 namespace Faker.Generators;
@@ -13,6 +12,6 @@ public class IntegerGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(int);   
+        return type == typeof(int);
     }
-};
+}

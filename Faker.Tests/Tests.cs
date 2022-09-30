@@ -1,5 +1,3 @@
-using System.Collections;
-using System.ComponentModel;
 using System.Reflection;
 using Faker.Interfaces;
 

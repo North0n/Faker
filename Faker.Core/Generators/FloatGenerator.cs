@@ -12,6 +12,6 @@ public class FloatGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(float);   
+        return type == typeof(float);
     }
 }

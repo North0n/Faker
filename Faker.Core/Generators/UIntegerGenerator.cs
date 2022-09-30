@@ -12,6 +12,6 @@ public class UIntegerGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(uint);   
+        return type == typeof(uint);
     }
 }

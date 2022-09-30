@@ -12,6 +12,6 @@ public class UShortGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(ushort);   
+        return type == typeof(ushort);
     }
 }

@@ -12,6 +12,6 @@ public class SByteGenerator : IValueGenerator
 
     public bool CanGenerate(Type type)
     {
-        return type == typeof(sbyte);   
+        return type == typeof(sbyte);
     }
 }
