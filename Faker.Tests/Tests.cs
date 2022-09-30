@@ -1,3 +1,5 @@
+using System.Collections;
+using System.ComponentModel;
 using System.Reflection;
 using Faker.Interfaces;
 
@@ -80,5 +82,31 @@ public class Tests
         Assert.That(privateStruct, Is.Not.EqualTo(null));
         Assert.That(privateStruct.testStruct2, Is.Not.EqualTo(null));
         Assert.That(privateStruct.testStruct2.BebraProp, Is.EqualTo(null));
+    }
+
+    class CycleList
+    {
+        public string name { get; set; }
+        public List<CycleList> InnerList { get; set; }
+    }
+    
+    [Test]
+    public void ListTest()
+    {
+        var list = _faker.Create<List<CycleList>>();
+        Assert.That(list, Is.Not.EqualTo(default(List<CycleList>)));
+        foreach (var innerList in list)
+        {
+            Assert.That(innerList, Is.Not.EqualTo(null));
+            Assert.Multiple(() =>
+            {
+                Assert.That(innerList.name, Is.Not.EqualTo(default(string)));
+                Assert.That(innerList.InnerList, Is.Not.EqualTo(default(List<CycleList>)));
+            });
+            foreach (var i in innerList.InnerList)
+            {
+                Assert.That(i, Is.EqualTo(default(CycleList)));
+            }
+        }
     }
 }
