@@ -29,11 +29,6 @@ public class FakerConfig
 
     public IValueGenerator GetGenerator(Type type, string memberName)
     {
-        if (_generators.ContainsKey(type) && _generators[type].ContainsKey(memberName))
-        {
-            return _generators[type][memberName];
-        }
-
-        return null;
+        return Contains(type, memberName) ? _generators[type][memberName] : null;
     }
 }
